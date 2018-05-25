@@ -297,6 +297,41 @@ dens(d_full$ADOS, xlim = c(-20, 30), ylim = c(0,0.13), xlab = "ADOS")
 
 ```
 
+```{r}
+#With Diagnosis
+#Create model
+m = map(
+  alist(
+    ADOS ~ dnorm (mu, sigma),
+    mu <- a + bv*VerbalIQ.s + bnv*NonVerbalIQ.s + bs*SocialIQ.s + bD*ASD
+    + bDv*VerbalIQ.s*ASD + bDnv*NonVerbalIQ.s*ASD + bDs*SocialIQ.s*ASD,
+    a ~ dnorm (0, 15),
+    bv ~ dnorm (0, 5),
+    bnv ~ dnorm (0, 5),
+    bs ~ dnorm (0, 5),
+    bD ~ dnorm (0, 5),
+    bDv ~ dnorm (0, 5),
+    bDnv ~ dnorm (0, 5),
+    bDs ~ dnorm (0, 5),
+    sigma ~ dunif (0,10)
+  ) ,
+  data = d_full
+)
+
+#Get results of model
+precis (m, corr=T)
+plot(precis (m, corr=T))
+
+#Predictive posterior check
+Output_sim <- sim( m, data=d_full)
+
+dens(Output_sim, col = "red", xlim = c(-20, 30), ylim = c(0,0.13),  xlab = "ADOS")
+par(new=TRUE)
+dens(d_full$ADOS, xlim = c(-20, 30), ylim = c(0,0.13), xlab = "ADOS")
+
+```
+
+
 
 4. Let's discuss contents:
 4.1. You have three scores for IQ, do they show shared variance? Is that the same in TD and ASD? What does that tell us about IQ?
